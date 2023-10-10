@@ -11,13 +11,17 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
-environment:
-  TODOS_TABLE: aws-table-20231008-${self:provider.stage}
-  TODOS_CREATED_AT_INDEX: CreatedAtIndex
-  S3_BUCKET: aws-bucket-20231008-${self:provider.stage}
-  SIGNED_URL_EXPIRATION: 3600
-  TODOS_USER_INDEX: TodoUserIndex
-  PROJECT_NAME: Todo
+  tracing:
+    lambda: true
+    apiGateway: true
+
+  environment:
+    TODOS_TABLE: aws-table-20231008-${self:provider.stage}
+    TODOS_CREATED_AT_INDEX: CreatedAtIndex
+    S3_BUCKET: aws-bucket-20231008-${self:provider.stage}
+    SIGNED_URL_EXPIRATION: 3600
+    TODOS_USER_INDEX: TodoUserIndex
+    PROJECT_NAME: Todo
 
 functions:
 
