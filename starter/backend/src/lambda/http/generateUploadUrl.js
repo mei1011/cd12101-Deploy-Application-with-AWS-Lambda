@@ -20,12 +20,9 @@ export const handler = middy()
     })
   )
   .handler(async (event) => {
-
+    const todoId = event.pathParameters.todoId
     const userId = getUserId(event)
     const command = new PutObjectCommand({Bucket: bucketName, Key: todoId });
-    
-    const todoId = event.pathParameters.todoId
-    
     const uploadUrl = await getSignedUrl(client, command, { expiresIn: urlExpiration })
 
     logger.info('Generating upload URL:', {
