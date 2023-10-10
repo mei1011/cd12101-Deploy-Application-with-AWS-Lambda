@@ -1,8 +1,9 @@
-import middy from '@middy/core'
-import cors from '@middy/http-cors'
+
 import httpErrorHandler from '@middy/http-error-handler'
 import { getUserId } from '../utils.mjs'
 import { updateTodoLogic } from '../../businessLogic/todos.mjs'
+import middy from '@middy/core'
+import cors from '@middy/http-cors'
 
 export const handler = middy()
   .use(httpErrorHandler())
@@ -12,8 +13,9 @@ export const handler = middy()
     })
   )
   .handler(async (event) => {
-    const todoId = event.pathParameters.todoId
     const updatedTodo = JSON.parse(event.body)
+    const todoId = event.pathParameters.todoId
+   
     const userId = getUserId(event)
     const todo = await updateTodoLogic(userId, todoId, updatedTodo)
     return {

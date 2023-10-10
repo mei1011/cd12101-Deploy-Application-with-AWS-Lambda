@@ -3,8 +3,12 @@ import { getTodos, createTodo, updateTodo, deleteTodo } from '../dataLayer/todos
 import { createLogger } from '../utils/logger.mjs'
 const logger = createLogger('todos')
 
-export const getTodosLogic = async (userId) => {
-  return getTodos(userId)
+export const updateTodoLogic = async (
+  userId,
+  todoId,
+  todo
+) => {
+  return updateTodo(userId, todoId, todo)
 }
 
 export const createTodoLogic = async (userId, todo) => {
@@ -19,12 +23,8 @@ export const createTodoLogic = async (userId, todo) => {
   })
 }
 
-export const updateTodoLogic = async (
-  userId,
-  todoId,
-  todo
-) => {
-  return updateTodo(userId, todoId, todo)
+export const getTodosLogic = async (userId) => {
+  return getTodos(userId)
 }
 
 export const deleteTodoLogic = async (userId, todoId) => {

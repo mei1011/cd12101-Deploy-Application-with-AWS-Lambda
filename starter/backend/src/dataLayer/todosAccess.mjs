@@ -7,6 +7,23 @@ const todosTable = process.env.TODOS_TABLE;
 const dbDocument = DynamoDBDocumentClient.from(new DynamoDBClient({ region: "us-east-1" }));
 
 
+export const createTodo = async (todo) => {
+    const command = new PutCommand({
+        TableName: todosTable,
+        Item: todo
+    })
+    await dbDocument.send(command)
+    return todo
+}
+
+export const deleteTodo = async (userId, todoId) => {
+    const command = new DeleteCommand ({
+        TableName: todosTable,
+        Key: { userId, todoId }
+    });
+    await dbDocument.send(command);
+}
+
 export const getTodos = async (id) => {
     const command = new QueryCommand({
         TableName: todosTable,
@@ -17,39 +34,6 @@ export const getTodos = async (id) => {
     })
     const result = await dbDocument.send(command)
     return result.Items
-}
-
-export const createTodo = async (todo) => {
-    const command = new PutCommand({
-        TableName: todosTable,
-        Item: todo
-    })
-    await dbDocument.send(command)
-    return todo
-}
-
-export const updateTodo = async (userId, todoId, updateData) => {
-    const command = new UpdateCommand({
-        TableName: todosTable,
-        Key: { userId, todoId },
-        ConditionExpression: 'attribute_exists(todoId)',
-        UpdateExpression: 'set #n = :n, dueDate = :due, done = :dn',
-        ExpressionAttributeNames: { '#n': 'name' },
-        ExpressionAttributeValues: {
-            ':n': updateData.name,
-            ':due': updateData.dueDate,
-            ':dn': updateData.done,
-        }
-    })
-    await docClient.send(command);
-}
-
-export const deleteTodo = async (userId, todoId) => {
-    const command = new DeleteCommand ({
-        TableName: todosTable,
-        Key: { userId, todoId }
-    });
-    await dbDocument.send(command);
 }
 
 export const saveImgUrl = async (userId, todoId, bucketName) => {
@@ -67,4 +51,20 @@ export const saveImgUrl = async (userId, todoId, bucketName) => {
     } catch (error) {
         logger.error(error)
     }
+}
+
+export const updateTodo = async (userId, todoId, updateData) => {
+    const command = new UpdateCommand({
+        TableName: todosTable,
+        Key: { userId, todoId },
+        ConditionExpression: 'attribute_exists(todoId)',
+        UpdateExpression: 'set #n = :n, dueDate = :due, done = :dn',
+        ExpressionAttributeNames: { '#n': 'name' },
+        ExpressionAttributeValues: {
+            ':n': updateData.name,
+            ':due': updateData.dueDate,
+            ':dn': updateData.done,
+        }
+    })
+    await dbDocument.send(command);
 }
