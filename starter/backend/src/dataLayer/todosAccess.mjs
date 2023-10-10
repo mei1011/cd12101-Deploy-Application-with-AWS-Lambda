@@ -3,13 +3,13 @@ import { DynamoDBDocumentClient, QueryCommand, PutCommand, DeleteCommand, Update
 import { createLogger } from '../utils/logger.mjs'
 
 const logger = createLogger('todoAccess')
-const table = process.env.TODOS_TABLE;
+const todosTable = process.env.TODOS_TABLE;
 const dbDocument = DynamoDBDocumentClient.from(new DynamoDBClient({ region: "us-east-1" }));
 
 
 export const getTodos = async (id) => {
     const command = new QueryCommand({
-        TableName: table,
+        TableName: todosTable,
         KeyConditionExpression: 'userId = :id',
         ExpressionAttributeValues: {
             ':id': id
@@ -21,7 +21,7 @@ export const getTodos = async (id) => {
 
 export const createTodo = async (todo) => {
     const command = new PutCommand({
-        TableName: table,
+        TableName: todosTable,
         Item: todo
     })
     await dbDocument.send(command)
@@ -46,7 +46,7 @@ export const updateTodo = async (userId, todoId, updateData) => {
 
 export const deleteTodo = async (userId, todoId) => {
     const command = new DeleteCommand ({
-        TableName: table,
+        TableName: todosTable,
         Key: { userId, todoId }
     });
     await dbDocument.send(command);
